@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4.12-brightgreen?logo=springboot)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kostas-111/social_media_api/ci.yml?branch=main&label=build&logo=github)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kostas-111/social_media_api/maven.yml?branch=main&label=build&logo=github)
 
 ## Обзор проекта
 
