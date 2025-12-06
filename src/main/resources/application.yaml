@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: social_media_api
+
+#  datasource:
+#    url: jdbc:postgresql://127.0.0.1:5432/social_media
+#    username: postgres
+#    password: postgres
+#    driver-class-name: org.postgresql.Driver
+#
+#  liquibase:
+#    change-log: classpath:db/db.changelog-master.xml
+#    enabled: true
+#    drop-first: false
+#    contexts: develop
+
+server:
+  port: 8081
+
+logging:
+  level:
+    liquibase: INFO
+    org.springframework: WARN
+

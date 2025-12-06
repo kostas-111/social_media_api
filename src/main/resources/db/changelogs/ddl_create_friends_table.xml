@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="create_friends_table.V.1.00" author="galkinki">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="friends" schemaName="public"/>
+      </not>
+    </preConditions>
+
+    <comment>Создание таблицы friends</comment>
+
+    <createTable tableName="friends" schemaName="public" remarks="Друзья">
+
+      <column name="id" type="bigserial" remarks="Уникальный идентификатор записи">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="first_user_id" type="bigint" remarks="ID пользователя - первой стороны дружбы">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="second_user_id" type="bigint" remarks="ID пользователя - второй стороны дружбы">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="query_id" type="bigint" remarks="ID запроса на дружбу">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="begin_date" type="timestamp" defaultValueComputed="now()" remarks="Дата начала дружбы">
+        <constraints nullable="true"/>
+      </column>
+
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName="friends"
+      baseColumnNames="first_user_id"
+      constraintName="fk_friends_first_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint
+      baseTableName="friends"
+      baseColumnNames="second_user_id"
+      constraintName="fk_friends_second_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint
+      baseTableName="friends"
+      baseColumnNames="query_id"
+      constraintName="fk_friends_query_id"
+      referencedTableName="friendship_queries"
+      referencedColumnNames="id"/>
+
+    <addUniqueConstraint
+      tableName="friends"
+      columnNames="first_user_id, second_user_id"
+      constraintName="uk_friends_user_pair"/>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      DROP TABLE public.friends;
+    </rollback>
+  </changeSet>
+</databaseChangeLog>

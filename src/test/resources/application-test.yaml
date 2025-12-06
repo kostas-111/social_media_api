@@ -1,0 +1,12 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  datasource:
+    url: jdbc:h2:mem:integration_test;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/db.changelog-master.xml

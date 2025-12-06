@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="create_post_image_table.V.1.00" author="galkinki">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="post_image" schemaName="public"/>
+      </not>
+    </preConditions>
+
+    <comment>Создание таблицы post_image</comment>
+
+    <createTable tableName="post_image" schemaName="public" remarks="Фото для постов">
+
+      <column name="id" type="bigserial" remarks="Уникальный идентификатор записи">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="file_path" type="text" remarks="адрес хранения изображения">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="post_id" type="bigint" remarks="ID поста, к которому прикрепллено изображение">
+        <constraints nullable="false"/>
+      </column>
+
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName="post_image"
+      baseColumnNames="post_id"
+      constraintName="fk_post_image_post_id"
+      referencedTableName="posts"
+      referencedColumnNames="id"/>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      DROP TABLE public.post_image;
+    </rollback>
+  </changeSet>
+</databaseChangeLog>

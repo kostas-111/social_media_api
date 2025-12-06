@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="create_posts_table.V.1.00" author="galkinki">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="posts" schemaName="public"/>
+      </not>
+    </preConditions>
+
+    <comment>Создание таблицы posts</comment>
+
+    <createTable tableName="posts" schemaName="public" remarks="Посты пользователей">
+
+      <column name="id" type="bigserial" remarks="Уникальный идентификатор записи">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="header" type="text" remarks="Заголовок поста">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="content" type="text" remarks="Текст поста">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="create_date" type="timestamp" defaultValueComputed="now()">
+        <constraints nullable="true"/>
+      </column>
+
+      <column name="user_id" type="bigint" remarks="ID пользователя, создавшего пост">
+        <constraints nullable="false"/>
+      </column>
+
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName="posts"
+      baseColumnNames="user_id"
+      constraintName="fk_posts_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      DROP TABLE public.posts;
+    </rollback>
+  </changeSet>
+</databaseChangeLog>

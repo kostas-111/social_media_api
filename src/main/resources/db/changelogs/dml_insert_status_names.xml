@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="insert_query_status_refbook.V.1.00" author="galkinki">
+
+    <comment>Вставка статусов запросов в справочник</comment>
+
+    <sql>
+      INSERT INTO public.query_status_refbook (name)
+      VALUES ('APPROVED'),
+             ('SEND'),
+             ('REJECTED');
+    </sql>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      DELETE FROM public.query_status_refbook
+      WHERE name IN ('APPROVED', 'SEND', 'REJECTED');
+    </rollback>
+  </changeSet>
+</databaseChangeLog>

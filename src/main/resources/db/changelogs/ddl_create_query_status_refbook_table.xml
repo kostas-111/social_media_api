@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="create_query_status_refbook_table.V.1.00" author="galkinki">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="query_status_refbook" schemaName="public"/>
+      </not>
+    </preConditions>
+
+    <comment>Создание таблицы query_status_refbook</comment>
+
+    <createTable tableName="query_status_refbook" schemaName="public" remarks="Справочник статусов запросов на дружбу">
+
+      <column name="id" type="bigserial" remarks="Уникальный идентификатор записи">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="name" type="text" remarks="Наименование статуса"/>
+
+    </createTable>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      DROP TABLE public.query_status_refbook;
+    </rollback>
+  </changeSet>
+</databaseChangeLog>

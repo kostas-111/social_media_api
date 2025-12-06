@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="create_friendship_queries_table.V.1.00" author="galkinki">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="friendship_queries" schemaName="public"/>
+      </not>
+    </preConditions>
+
+    <comment>Создание таблицы friendship_queries</comment>
+
+    <createTable tableName="friendship_queries" schemaName="public" remarks="Друзья">
+
+      <column name="id" type="bigserial" remarks="Уникальный идентификатор записи">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="sender_user_id" type="bigint" remarks="ID пользователя - отправителя запроса">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="receiver_user_id" type="bigint" remarks="ID пользователя - получателя запроса">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="status_id" type="bigint" remarks="ID статуса из справочника статусов запросов на дружбу">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="query_date" type="timestamp" defaultValueComputed="now()" remarks="Дата отправки запроса">
+        <constraints nullable="true"/>
+      </column>
+
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName="friendship_queries"
+      baseColumnNames="sender_user_id"
+      constraintName="fk_friendship_queries_sender_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint
+      baseTableName="friendship_queries"
+      baseColumnNames="receiver_user_id"
+      constraintName="fk_friendship_queries_receiver_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint
+      baseTableName="friendship_queries"
+      baseColumnNames="status_id"
+      constraintName="fk_friendship_queries_status_id"
+      referencedTableName="query_status_refbook"
+      referencedColumnNames="id"/>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      DROP TABLE public.friendship_queries;
+    </rollback>
+  </changeSet>
+</databaseChangeLog>

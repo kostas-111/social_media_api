@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <include file="changelogs/ddl_create_query_status_refbook_table.xml" relativeToChangelogFile="true"/>
+  <include file="changelogs/dml_insert_status_names.xml" relativeToChangelogFile="true"/>
+  <include file="changelogs/ddl_create_users_table.xml" relativeToChangelogFile="true"/>
+  <include file="changelogs/ddl_create_posts_table.xml" relativeToChangelogFile="true"/>
+  <include file="changelogs/ddl_create_post_image_table.xml" relativeToChangelogFile="true"/>
+  <include file="changelogs/ddl_create_friendship_queries_table.xml" relativeToChangelogFile="true"/>
+  <include file="changelogs/ddl_create_friends_table.xml" relativeToChangelogFile="true"/>
+  <include file="changelogs/ddl_create_subscriptions_table.xml" relativeToChangelogFile="true"/>
+  <include file="changelogs/ddl_create_messages_table.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

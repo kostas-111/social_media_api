@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="create_messages_table.V.1.00" author="galkinki">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="messages" schemaName="public"/>
+      </not>
+    </preConditions>
+
+    <comment>Создание таблицы messages</comment>
+
+    <createTable tableName="messages" schemaName="public" remarks="Друзья">
+
+      <column name="id" type="bigserial" remarks="Уникальный идентификатор записи">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="sender_user_id" type="bigint" remarks="ID пользователя - отправителя">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="receiver_user_id" type="bigint" remarks="ID пользователя - получателя">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="content" type="text" remarks="Текс сообщения">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="send_date" type="timestamp" defaultValueComputed="now()" remarks="Дата отправки сообщения">
+        <constraints nullable="true"/>
+      </column>
+
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName="messages"
+      baseColumnNames="sender_user_id"
+      constraintName="fk_messages_sender_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint
+      baseTableName="messages"
+      baseColumnNames="receiver_user_id"
+      constraintName="fk_messages_receiver_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      DROP TABLE public.messages;
+    </rollback>
+  </changeSet>
+</databaseChangeLog>

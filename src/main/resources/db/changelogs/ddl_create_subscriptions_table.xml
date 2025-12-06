@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="create_subscriptions_table.V.1.00" author="galkinki">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="subscriptions" schemaName="public"/>
+      </not>
+    </preConditions>
+
+    <comment>Создание таблицы subscriptions</comment>
+
+    <createTable tableName="subscriptions" schemaName="public" remarks="Друзья">
+
+      <column name="id" type="bigserial" remarks="Уникальный идентификатор записи">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="subscriber_user_id" type="bigint" remarks="ID пользователя - подписчика">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="target_user_id" type="bigint" remarks="ID целевого пользователя (на кого подписывается subscriber_user_id)">
+        <constraints nullable="false"/>
+      </column>
+
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName="subscriptions"
+      baseColumnNames="subscriber_user_id"
+      constraintName="fk_subscriptions_subscriber_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint
+      baseTableName="subscriptions"
+      baseColumnNames="target_user_id"
+      constraintName="fk_subscriptions_target_user_id"
+      referencedTableName="users"
+      referencedColumnNames="id"/>
+
+    <addUniqueConstraint
+      tableName="subscriptions"
+      columnNames="subscriber_user_id, target_user_id"
+      constraintName="uk_subscriptions_user_pair"/>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      DROP TABLE public.subscriptions;
+    </rollback>
+  </changeSet>
+</databaseChangeLog>
