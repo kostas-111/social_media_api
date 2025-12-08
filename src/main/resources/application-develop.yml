@@ -7,12 +7,19 @@ spring:
     url: jdbc:postgresql://localhost:5432/social_media
     username: postgres
     password: postgres
-    driver-class-name: org.postgresql.Driver
 
-    liquibase:
-      change-log: classpath:db/db.changelog-master.xml
-      enabled: true
-      drop-first: false
-      contexts: develop
-      parameters:
-        env: development
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+    enabled: true
+    drop-first: false
+    contexts: develop
+    parameters:
+      env: development
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
