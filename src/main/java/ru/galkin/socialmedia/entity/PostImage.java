@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "posts_image")
+@Table(name = "post_image")
 @Getter
 @Setter
 @NoArgsConstructor

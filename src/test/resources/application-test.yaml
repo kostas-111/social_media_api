@@ -4,14 +4,20 @@ spring:
       on-profile: test
 
   datasource:
-    url: jdbc:h2:mem:integration_test;MODE=PostgreSQL
+    url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
+    username: sa
+    password: password
 
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    # show-sql: true  # опционально, если нужно видеть SQL
+    properties:
+      hibernate:
+        format_sql: true  # для красивого форматирования SQL
 
   liquibase:
-    enabled: true
+    enabled: false
     change-log: classpath:db/db.changelog-master.xml
