@@ -3,7 +3,9 @@ package ru.galkin.socialmedia.repository;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -56,7 +58,7 @@ class PostImageRepositoryTest {
     postImageRepository.saveAll(List.of(image1, image2, image3));
   }
 
-  @AfterAll
+  @AfterEach
   void tearDown() {
     postImageRepository.deleteAll();
     postRepository.deleteAll();
@@ -87,5 +89,22 @@ class PostImageRepositoryTest {
             .containsExactlyInAnyOrder("/images/post1/image1.jpg");
     assertThat(remainingImages).extracting(img -> img.getPost().getId())
             .containsOnly(post1.getId());
+  }
+
+  @Test
+  public void whenSaveImageThenFindById() {
+    var foundImage = postImageRepository.findById(image1.getId());
+    Assertions.assertThat(foundImage).isPresent();
+    Assertions.assertThat(foundImage.get().getFilePath()).isEqualTo("/images/post1/image1.jpg");
+  }
+
+  @Test
+  public void whenFindAllThenReturnAllImages() {
+    List<PostImage> images = postImageRepository.findAll();
+    Assertions.assertThat(images.size()).isEqualTo(3);
+    Assertions.assertThat(images).extracting(PostImage::getFilePath)
+        .contains("/images/post3/image3.jpg",
+                  "/images/post2/image2.jpg",
+                  "/images/post1/image1.jpg");
   }
 }

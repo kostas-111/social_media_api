@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.List;
 import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import ru.galkin.socialmedia.entity.PostImage;
 import ru.galkin.socialmedia.entity.User;
 import ru.galkin.socialmedia.testtools.Creator;
 
@@ -83,5 +85,20 @@ class UserRepositoryTest {
     Optional<User> foundUser = userRepository.findByEmailAndPassword(wrongEmail, wrongPassword);
 
     assertThat(foundUser).isEmpty();
+  }
+
+  @Test
+  public void whenSaveUserThenFindById() {
+    var foundUser = userRepository.findById(testUser1.getId());
+    Assertions.assertThat(foundUser).isPresent();
+    Assertions.assertThat(foundUser.get().getEmail()).isEqualTo("john@example.com");
+  }
+
+  @Test
+  public void whenFindAllThenReturnAllUsers() {
+    List<User> users = userRepository.findAll();
+    Assertions.assertThat(users.size()).isEqualTo(3);
+    Assertions.assertThat(users).extracting(User::getName)
+        .contains("John Doe", "Jane Doe", "Jacob Doe");
   }
 }

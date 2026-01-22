@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ru.galkin.socialmedia.entity.Post;
+import ru.galkin.socialmedia.entity.PostImage;
 import ru.galkin.socialmedia.entity.Subscription;
 import ru.galkin.socialmedia.entity.User;
 import ru.galkin.socialmedia.testtools.Creator;
@@ -188,5 +190,18 @@ class PostRepositoryTest {
 
     assertThat(postsPage.getContent()).isEmpty();
     assertThat(postsPage.getTotalElements()).isZero();
+  }
+
+  @Test
+  public void whenSavePostThenFindById() {
+    var foundPost = postRepository.findById(post1.getId());
+    Assertions.assertThat(foundPost).isPresent();
+    Assertions.assertThat(foundPost.get().getHeader()).isEqualTo("First Post");
+  }
+
+  @Test
+  public void whenFindAllThenReturnAllPost() {
+    List<Post> posts = postRepository.findAll();
+    Assertions.assertThat(posts.size()).isEqualTo(3);
   }
 }

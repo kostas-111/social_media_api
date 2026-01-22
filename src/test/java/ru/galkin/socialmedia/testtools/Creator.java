@@ -2,6 +2,7 @@ package ru.galkin.socialmedia.testtools;
 
 import java.time.LocalDateTime;
 import lombok.experimental.UtilityClass;
+import ru.galkin.socialmedia.entity.Message;
 import ru.galkin.socialmedia.entity.Post;
 import ru.galkin.socialmedia.entity.PostImage;
 import ru.galkin.socialmedia.entity.Subscription;
@@ -96,5 +97,14 @@ public class Creator {
     subscription.setSubscriberUser(subscriber);
     subscription.setTargetUser(target);
     return subscription;
+  }
+
+  public static Message createTestMessage(User sender, User receiver, String content, LocalDateTime createdDate) {
+    Message message = new Message();
+    message.setSenderUser(sender);
+    message.setReceiverUser(receiver);
+    message.setContent(content);
+    message.setSendDate(createdDate);
+    return message;
   }
 }
