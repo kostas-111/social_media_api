@@ -3,6 +3,7 @@ package ru.galkin.socialmedia.repository;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,5 +73,14 @@ class SubscriptionRepositoryTest {
   void whenFindAllSubscribersByUserIdWithNoSubscribersThenReturnEmptyList() {
     List<User> subscribers = subscriptionRepository.findAllSubscribersByUserId(testUser2.getId());
     assertThat(subscribers).isEmpty();
+  }
+
+  @Test
+  void whenFindBySubscriberUserIdAndTargetUserIdThenReturnSubscription() {
+    Optional<Subscription> subscription =
+        subscriptionRepository.findBySubscriberUserIdAndTargetUserId(testUser2.getId(), testUser1.getId());
+    assertThat(subscription.isPresent()).isTrue();
+    assertThat(subscription).isPresent().get().extracting(s -> s.getSubscriberUser().getEmail())
+        .isEqualTo("jane@example.com");
   }
 }

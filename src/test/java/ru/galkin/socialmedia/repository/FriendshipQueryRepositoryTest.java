@@ -2,6 +2,7 @@ package ru.galkin.socialmedia.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,16 +75,23 @@ class FriendshipQueryRepositoryTest {
   }
 
   @Test
-  public void whenSaveQueryThenFindById() {
+  void whenSaveQueryThenFindById() {
     var foundQuery = friendshipQueryRepository.findById(friendshipQuery1.getId());
     assertThat(foundQuery).isPresent();
     assertThat(foundQuery.get().getStatus().getName()).isEqualTo("APPROVED");
   }
 
   @Test
-  public void whenFindAllThenReturnAllQuery() {
+  void whenFindAllThenReturnAllQuery() {
     List<FriendshipQuery> friendshipQueries = friendshipQueryRepository.findAll();
     assertThat(friendshipQueries.size()).isEqualTo(2);
     assertThat(friendshipQueries).extracting(FriendshipQuery::getSenderUser).contains(testUser1, testUser2);
+  }
+
+  @Test
+  void whenFindBySenderUserIdThenReturnFriendshipQuery() {
+    Optional<FriendshipQuery> friendshipQuery = friendshipQueryRepository.findBySenderUserId(testUser1.getId());
+    assertThat(friendshipQuery.isPresent()).isTrue();
+    assertThat(friendshipQuery.get().getStatus().getName()).isEqualTo("APPROVED");
   }
 }

@@ -1,6 +1,7 @@
 package ru.galkin.socialmedia.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +15,6 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
           WHERE s.targetUser.id = :userId
           """)
   List<User> findAllSubscribersByUserId(@Param("userId") Long userId);
+
+  Optional<Subscription> findBySubscriberUserIdAndTargetUserId(Long subscriberUserId, Long targetUserId);
 }
