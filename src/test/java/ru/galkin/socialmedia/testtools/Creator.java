@@ -74,21 +74,21 @@ public class Creator {
   public static PostImage createTestPostImage1(Post post) {
     PostImage postImage = new PostImage();
     postImage.setFilePath("/images/post1/image1.jpg");
-    postImage.setPost(post);
+    postImage.setPostId(post.getId());
     return postImage;
   }
 
   public static PostImage createTestPostImage2(Post post) {
     PostImage postImage = new PostImage();
     postImage.setFilePath("/images/post2/image2.jpg");
-    postImage.setPost(post);
+    postImage.setPostId(post.getId());
     return postImage;
   }
 
   public static PostImage createTestPostImage3(Post post) {
     PostImage postImage = new PostImage();
     postImage.setFilePath("/images/post3/image3.jpg");
-    postImage.setPost(post);
+    postImage.setPostId(post.getId());
     return postImage;
   }
 

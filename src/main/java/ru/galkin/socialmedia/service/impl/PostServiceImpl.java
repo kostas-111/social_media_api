@@ -2,6 +2,7 @@ package ru.galkin.socialmedia.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,9 @@ public class PostServiceImpl implements PostService {
 
   @Override
   @Transactional
-  public void createPost(PostDto postDto, Long userId) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new EntityNotFoundException(String.format("Пользователь с id: %d не найден", userId)));
+  public PostDto createPost(PostDto postDto) {
+    User user = userRepository.findById(postDto.getUserId())
+        .orElseThrow(() -> new EntityNotFoundException(String.format("Пользователь с id: %d не найден", postDto.getUserId())));
 
     Post post = new Post();
     post.setUser(user);
@@ -41,18 +42,22 @@ public class PostServiceImpl implements PostService {
           .map(filePath -> {
             PostImage image = new PostImage();
             image.setFilePath(filePath);
-            image.setPost(post);
+            image.setPostId(post.getId());
             return image;
           })
           .collect(Collectors.toList());
 
       postImageRepository.saveAll(images);
     }
+    postDto.setId(post.getId());
+    return postDto;
   }
 
   @Override
   @Transactional
-  public void updatePost(PostDto postDto, Long postId, Long userId) {
+  public PostDto updatePost(PostDto postDto) {
+    Long postId = postDto.getId();
+    Long userId = postDto.getUserId();
     List<Long> userPostIdsList = postRepository.findAllByUserId(userId).stream()
         .map(Post::getId).toList();
 
@@ -61,6 +66,7 @@ public class PostServiceImpl implements PostService {
     }
 
     postRepository.updateHeaderAndContent(postDto.getHeader(), postDto.getContent(), postId);
+    return postDto;
   }
 
   @Override
@@ -68,5 +74,10 @@ public class PostServiceImpl implements PostService {
   public void deletePost(Long postId) {
     postImageRepository.deleteByPostId(postId);
     postRepository.deleteById(postId);
+  }
+
+  @Override
+  public Optional<Post> findById(Long id) {
+    return postRepository.findById(id);
   }
 }

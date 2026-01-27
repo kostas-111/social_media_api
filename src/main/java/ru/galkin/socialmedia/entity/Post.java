@@ -36,10 +36,10 @@ public class Post {
   @Column(name = "create_date")
   private LocalDateTime created;
 
-  @ManyToOne(fetch =  FetchType.LAZY)
+  @ManyToOne(fetch =  FetchType.EAGER)
   @JoinColumn(name = "user_id")
   private User user;
 
-  @OneToMany(mappedBy = "post")
+  @OneToMany(mappedBy = "postId")
   private List<PostImage> images;
 }

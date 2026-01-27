@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.List;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,12 +68,12 @@ class PostImageRepositoryTest {
   @Transactional
   void whenDeleteByPostIdThenAllImagesForPostAreRemoved() {
     List<PostImage> initialPost1Images = postImageRepository.findAll().stream()
-        .filter(img -> img.getPost().getId().equals(post1.getId()))
+        .filter(img -> img.getPostId().equals(post1.getId()))
         .toList();
     assertThat(initialPost1Images).hasSize(1);
 
     List<PostImage> initialPost2Images = postImageRepository.findAll().stream()
-        .filter(img -> img.getPost().getId().equals(post2.getId()))
+        .filter(img -> img.getPostId().equals(post2.getId()))
         .toList();
     assertThat(initialPost2Images).hasSize(2);
 
@@ -87,7 +86,7 @@ class PostImageRepositoryTest {
     assertThat(remainingImages).hasSize(1);
     assertThat(remainingImages).extracting(PostImage::getFilePath)
             .containsExactlyInAnyOrder("/images/post1/image1.jpg");
-    assertThat(remainingImages).extracting(img -> img.getPost().getId())
+    assertThat(remainingImages).extracting(PostImage::getPostId)
             .containsOnly(post1.getId());
   }
 

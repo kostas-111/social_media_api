@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDto {
+  private Long id;
+  private Long userId;
   private String header;
   private String content;
   private List<String> imagePaths;

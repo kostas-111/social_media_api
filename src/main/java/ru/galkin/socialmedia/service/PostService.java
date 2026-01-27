@@ -1,12 +1,16 @@
 package ru.galkin.socialmedia.service;
 
+import java.util.Optional;
 import ru.galkin.socialmedia.dto.PostDto;
+import ru.galkin.socialmedia.entity.Post;
 
 public interface PostService {
 
-  void createPost(PostDto postDto, Long userId);
+  PostDto createPost(PostDto postDto);
 
-  void updatePost(PostDto postDto, Long postId, Long userId);
+  PostDto updatePost(PostDto postDto);
+
+  Optional<Post> findById(Long id);
 
   void deletePost(Long postId);
 

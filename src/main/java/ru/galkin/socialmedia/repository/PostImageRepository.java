@@ -10,7 +10,7 @@ public interface PostImageRepository extends JpaRepository<PostImage, Long> {
 
   @Modifying(clearAutomatically = true)
   @Query("""
-          DELETE FROM PostImage pi WHERE pi.post.id = :postId
+          DELETE FROM PostImage pi WHERE pi.postId = :postId
           """)
   void deleteByPostId(@Param("postId") Long postId);
 }
