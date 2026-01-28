@@ -1,7 +1,6 @@
 package ru.galkin.socialmedia.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.galkin.socialmedia.entity.User;
 import ru.galkin.socialmedia.service.UserService;
 
@@ -24,7 +23,13 @@ public class UserController {
 
   @PostMapping
   public ResponseEntity<User> save(@RequestBody User user) {
-    return ResponseEntity.ok(userService.saveUser(user));
+    userService.saveUser(user);
+    var uri = ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(user.getId())
+        .toUri();
+    return ResponseEntity.ok().location(uri).body(user);
   }
 
   @GetMapping("/{userId}")
@@ -35,15 +40,18 @@ public class UserController {
   }
 
   @PutMapping
-  @ResponseStatus(HttpStatus.OK)
-  public void update(@RequestBody User user) {
-    userService.saveUser(user);
+  public ResponseEntity<Void> update(@RequestBody User user) {
+    if (userService.updateUser(user)) {
+      return ResponseEntity.ok().build();
+    }
+    return ResponseEntity.notFound().build();
   }
 
   @DeleteMapping("/{userId}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void removeById(@PathVariable Long userId) {
-    userService.deleteUserById(userId);
+  public ResponseEntity<Void> removeById(@PathVariable Long userId) {
+    if (userService.deleteUserById(userId)) {
+      return ResponseEntity.noContent().build();
+    }
+    return ResponseEntity.notFound().build();
   }
-
 }

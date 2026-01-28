@@ -8,10 +8,10 @@ public interface PostService {
 
   PostDto createPost(PostDto postDto);
 
-  PostDto updatePost(PostDto postDto);
+  boolean updatePost(PostDto postDto);
 
   Optional<Post> findById(Long id);
 
-  void deletePost(Long postId);
+  boolean deletePost(Long postId);
 
 }

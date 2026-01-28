@@ -55,9 +55,13 @@ public class PostServiceImpl implements PostService {
 
   @Override
   @Transactional
-  public PostDto updatePost(PostDto postDto) {
+  public boolean updatePost(PostDto postDto) {
     Long postId = postDto.getId();
     Long userId = postDto.getUserId();
+
+    if (!postRepository.existsById(postId)) {
+      return false;
+    }
     List<Long> userPostIdsList = postRepository.findAllByUserId(userId).stream()
         .map(Post::getId).toList();
 
@@ -66,14 +70,18 @@ public class PostServiceImpl implements PostService {
     }
 
     postRepository.updateHeaderAndContent(postDto.getHeader(), postDto.getContent(), postId);
-    return postDto;
+    return true;
   }
 
   @Override
   @Transactional
-  public void deletePost(Long postId) {
+  public boolean deletePost(Long postId) {
+    if (!postRepository.existsById(postId)) {
+      return false;
+    }
     postImageRepository.deleteByPostId(postId);
     postRepository.deleteById(postId);
+    return true;
   }
 
   @Override

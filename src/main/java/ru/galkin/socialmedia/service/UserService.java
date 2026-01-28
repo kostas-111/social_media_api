@@ -9,5 +9,7 @@ public interface UserService {
 
   Optional<User> findUserById(Long id);
 
-  void deleteUserById(Long id);
+  boolean updateUser(User user);
+
+  boolean deleteUserById(Long id);
 }
