@@ -2,12 +2,14 @@ package ru.galkin.socialmedia.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.galkin.socialmedia.dto.PostDto;
+import ru.galkin.socialmedia.dto.UserPostsDto;
 import ru.galkin.socialmedia.entity.Post;
 import ru.galkin.socialmedia.entity.PostImage;
 import ru.galkin.socialmedia.entity.User;
@@ -87,5 +89,59 @@ public class PostServiceImpl implements PostService {
   @Override
   public Optional<Post> findById(Long id) {
     return postRepository.findById(id);
+  }
+
+  @Override
+  @Transactional
+  public List<UserPostsDto> findAllPostsByUserIdList(List<Long> userIdList) {
+    List<Post> posts = postRepository.findAllByUserIdIn(userIdList);
+
+    Map<Long, List<Post>> postsByUserMap = posts.stream()
+        .collect(Collectors.groupingBy(
+            post -> post.getUser().getId(),
+            Collectors.toList()
+        ));
+
+    List<User> users = userRepository.findAllById(userIdList);
+
+    Map<Long, String> userNames = users.stream()
+        .collect(Collectors.toMap(
+            User::getId,
+            User::getName
+        ));
+
+    List<UserPostsDto> result = userIdList.stream()
+        .map(userId -> {
+          UserPostsDto userPostsDto = new UserPostsDto();
+          userPostsDto.setUserId(userId);
+          userPostsDto.setName(userNames.getOrDefault(
+              userId, String.format("Пользователь с id: %d в системе не зарегистрирован", userId)));
+
+          List<PostDto> postDtoList = postsByUserMap.getOrDefault(userId, List.of())
+              .stream()
+              .map(this::convertToPostDto)
+              .collect(Collectors.toList());
+
+          userPostsDto.setPosts(postDtoList);
+          return userPostsDto;
+        })
+        .collect(Collectors.toList());
+
+    return result;
+  }
+
+  private PostDto convertToPostDto(Post post) {
+    PostDto postDto = new PostDto();
+    postDto.setId(post.getId());
+    postDto.setUserId(post.getUser().getId());
+    postDto.setHeader(post.getHeader());
+    postDto.setContent(post.getContent());
+
+    List<String> imagePaths = post.getImages().stream()
+        .map(PostImage::getFilePath)
+        .toList();
+    postDto.setImagePaths(imagePaths);
+
+    return postDto;
   }
 }

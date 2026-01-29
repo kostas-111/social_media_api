@@ -42,4 +42,6 @@ WHERE s.targetUser.id = :userId
 ORDER BY p.created DESC
 """)
   Page<Post> findAllSubscribersPostsIdOrderByCreatedDesc(@Param("userId") Long userId, Pageable pageable);
+
+  List<Post> findAllByUserIdIn(List<Long> userIds);
 }

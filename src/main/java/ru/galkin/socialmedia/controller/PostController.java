@@ -1,5 +1,6 @@
 package ru.galkin.socialmedia.controller;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.galkin.socialmedia.dto.PostDto;
+import ru.galkin.socialmedia.dto.UserPostsDto;
 import ru.galkin.socialmedia.entity.Post;
 import ru.galkin.socialmedia.service.PostService;
 
@@ -54,5 +56,11 @@ public class PostController {
       return ResponseEntity.noContent().build();
     }
     return ResponseEntity.notFound().build();
+  }
+
+  @GetMapping("/users/posts")
+  public ResponseEntity<List<UserPostsDto>> getAllUsersPosts(@RequestBody List<Long> userIdList) {
+    List<UserPostsDto> result = postService.findAllPostsByUserIdList(userIdList);
+    return ResponseEntity.ok(result);
   }
 }
