@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="alter_users_table_add_unique_on_e-mail.V.1.00" author="galkinki">
+    <preConditions onFail="MARK_RAN">
+      <and>
+        <tableExists tableName="users" schemaName="public"/>
+        <columnExists tableName="users" columnName="e-mail" schemaName="public"/>
+      </and>
+    </preConditions>
+
+    <comment>Добавление уникального ограничения для поля e-mail</comment>
+
+    <addUniqueConstraint
+      tableName="users"
+      columnNames="e-mail"
+      constraintName="users_email_unique"
+      schemaName="public"/>
+
+    <!--    Откат в случае не удачи-->
+    <rollback>
+      <dropUniqueConstraint
+        tableName="users"
+        constraintName="users_email_unique"
+        schemaName="public"/>
+    </rollback>
+  </changeSet>
+</databaseChangeLog>
