@@ -1,8 +1,10 @@
 package ru.galkin.socialmedia.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -19,7 +22,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-  @ExceptionHandler(value = { DataIntegrityViolationException.class })
+  @ExceptionHandler(value = { DataIntegrityViolationException.class,
+                              EntityNotFoundException.class,
+                              ConstraintViolationException.class,
+                              MethodArgumentNotValidException.class})
   public void catchDataIntergrityViolationException(Exception e, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     Map<String, String> details = new HashMap<>();
@@ -32,5 +38,4 @@ public class GlobalExceptionHandler {
     response.getWriter().write(new ObjectMapper().writeValueAsString(details));
     log.error(e.getLocalizedMessage());
   }
-
 }

@@ -1,15 +1,14 @@
 package ru.galkin.socialmedia.service;
 
-import java.util.Optional;
-import ru.galkin.socialmedia.entity.User;
+import ru.galkin.socialmedia.dto.UserDto;
 
 public interface UserService {
 
-  User saveUser(User user);
+  UserDto saveUser(UserDto user);
 
-  Optional<User> findUserById(Long id);
+  UserDto findUserById(Long id);
 
-  boolean updateUser(User user);
+  boolean updateUser(UserDto userDto);
 
   boolean deleteUserById(Long id);
 }

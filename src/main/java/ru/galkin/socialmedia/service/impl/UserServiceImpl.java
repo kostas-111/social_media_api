@@ -1,9 +1,11 @@
 package ru.galkin.socialmedia.service.impl;
 
-import java.util.Optional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.galkin.socialmedia.dto.UserDto;
 import ru.galkin.socialmedia.entity.User;
+import ru.galkin.socialmedia.mappers.UserMapper;
 import ru.galkin.socialmedia.repository.UserRepository;
 import ru.galkin.socialmedia.service.UserService;
 
@@ -12,19 +14,26 @@ import ru.galkin.socialmedia.service.UserService;
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
+  private final UserMapper userMapper;
 
   @Override
-  public User saveUser(User user) {
-    return userRepository.save(user);
+  public UserDto saveUser(UserDto userDto) {
+    User newUser = userRepository.save(userMapper.getEntityFromDto(userDto));
+    return userMapper.getDtoFromEntity(newUser);
   }
 
   @Override
-  public Optional<User> findUserById(Long id) {
-    return userRepository.findById(id);
+  public UserDto findUserById(Long id) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException(
+            String.format("Пользователь с id: %d не найден", id))
+        );
+    return userMapper.getDtoFromEntity(user);
   }
 
   @Override
-  public boolean updateUser(User user) {
+  public boolean updateUser(UserDto userDto) {
+    User user = userMapper.getEntityFromDto(userDto);
     if (!userRepository.existsById(user.getId())) {
       return false;
     }
