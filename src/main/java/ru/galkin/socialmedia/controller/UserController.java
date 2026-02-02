@@ -1,5 +1,11 @@
 package ru.galkin.socialmedia.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.galkin.socialmedia.dto.UserDto;
 import ru.galkin.socialmedia.service.UserService;
 
+@Tag(name = "UserController", description = "Контроллер управления API пользовтелей")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/user")
@@ -26,6 +33,15 @@ public class UserController {
 
   private final UserService userService;
 
+  @Operation(
+      summary = "Создание нового пользователя",
+      description = "Создает нового пользователя в системе. Возвращает созданного пользователя с присвоенным идентификатором."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json") }),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }),
+      @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) })
+  })
   @PostMapping
   public ResponseEntity<UserDto> save(@Valid @RequestBody UserDto userDto) {
     UserDto newUser = userService.saveUser(userDto);
@@ -37,6 +53,13 @@ public class UserController {
     return ResponseEntity.ok().location(uri).body(newUser);
   }
 
+  @Operation(
+      summary = "Получить пользователя по id",
+      description = "Получить Пользователя по его идентификатору. Возвращает объект с id, именем, почтой и паролем."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json") }),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
   @GetMapping("/{userId}")
   public ResponseEntity<UserDto> get(@Valid
                                      @PathVariable("userId")
@@ -47,6 +70,15 @@ public class UserController {
     return ResponseEntity.ok().body(user);
   }
 
+  @Operation(
+      summary = "Обновление данных пользователя",
+      description = "Обновляет данные существующего пользователя. Возвращает статус операции."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "200"),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }),
+      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) })
+  })
   @PutMapping
   public ResponseEntity<Void> update(@RequestBody UserDto userDto) {
     if (userService.updateUser(userDto)) {
@@ -55,6 +87,16 @@ public class UserController {
     return ResponseEntity.notFound().build();
   }
 
+  @Operation(
+      summary = "Удаление пользователя по id",
+      description = "Удаляет пользователя из системы по его идентификатору. Возвращает статус операции."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "204"),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }),
+      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+      @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) })
+  })
   @DeleteMapping("/{userId}")
   public ResponseEntity<Void> removeById(@Valid
                                          @PathVariable("userId")

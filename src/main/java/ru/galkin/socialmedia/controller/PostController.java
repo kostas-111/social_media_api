@@ -1,5 +1,11 @@
 package ru.galkin.socialmedia.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -22,6 +28,7 @@ import ru.galkin.socialmedia.dto.PostDto;
 import ru.galkin.socialmedia.dto.UserPostsDto;
 import ru.galkin.socialmedia.service.PostService;
 
+@Tag(name = "PostController", description = "Контроллер управления API постов")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/post")
@@ -30,6 +37,15 @@ public class PostController {
 
   private final PostService postService;
 
+  @Operation(
+      summary = "Создание нового поста",
+      description = "Создает новый пост в системе. Возвращает созданный пользователем пост с присвоенным идентификатором."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = PostDto.class), mediaType = "application/json") }),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }),
+      @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) })
+  })
   @PostMapping
   public ResponseEntity<PostDto> save(@Valid @RequestBody PostDto postDto) {
     PostDto newPost = postService.createPost(postDto);
@@ -41,6 +57,13 @@ public class PostController {
     return ResponseEntity.ok().location(uri).body(newPost);
   }
 
+  @Operation(
+      summary = "Получить пост по id",
+      description = "Получить Пост по его идентификатору. Возвращает объект с id, заголовком, содержанием и путями к файловым вложениям."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = PostDto.class), mediaType = "application/json") }),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
   @GetMapping("/{postId}")
   public ResponseEntity<PostDto> get(@Valid
                                   @PathVariable("postId")
@@ -51,6 +74,15 @@ public class PostController {
     return ResponseEntity.ok().body(post);
   }
 
+  @Operation(
+      summary = "Обновление поста",
+      description = "Обновляет заголовок и содержание поста. Возвращает статус операции."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "200"),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }),
+      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) })
+  })
   @PutMapping
   public ResponseEntity<Void> update(@Valid @RequestBody PostDto postDto) {
     if (postService.updatePost(postDto)) {
@@ -59,6 +91,16 @@ public class PostController {
     return ResponseEntity.notFound().build();
   }
 
+  @Operation(
+      summary = "Удаление поста по id",
+      description = "Удаляет пост из системы по его идентификатору. Возвращает статус операции."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "204"),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }),
+      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+      @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) })
+  })
   @DeleteMapping("/{postId}")
   public ResponseEntity<Void> removeById(@Valid
                                          @PathVariable("postId")
@@ -71,6 +113,14 @@ public class PostController {
     return ResponseEntity.notFound().build();
   }
 
+  @Operation(
+      summary = "Получить посты по списку пользователей",
+      description = "Получить все посты для указанных пользователей. Возвращает список объектов с id пользователя, именем и списком его постов."
+  )
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = UserPostsDto.class), mediaType = "application/json") }),
+      @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) })
+  })
   @GetMapping("/users/posts")
   public ResponseEntity<List<UserPostsDto>> getAllUsersPosts(@Valid @RequestParam @NotEmpty
                                                              List<Long> userIdList) {

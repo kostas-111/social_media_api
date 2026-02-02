@@ -12,3 +12,12 @@ logging:
     liquibase: INFO
     org.springframework: WARN
 
+socialmedia:
+  openapi:
+    dev-url: http://localhost:8081
+    prod-url: https://mydomen.com
+
+
+springdoc:
+  swagger-ui:
+    tryItOutEnabled=true
